@@ -6,7 +6,9 @@ import torch.optim
 import torch.optim.lr_scheduler as lr_scheduler
 import time
 import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '7'
 import glob
+
 
 import configs
 import backbone
