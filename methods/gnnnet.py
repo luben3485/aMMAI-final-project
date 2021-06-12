@@ -3,17 +3,18 @@ import torch.nn as nn
 import numpy as np
 from methods.meta_template import MetaTemplate
 from methods.gnn import GNN_nl
-from methods import backbone
+import backbone
 
 class GnnNet(MetaTemplate):
   maml=False
-  def __init__(self, model_func,  n_way, n_support, tf_path=None):
-    super(GnnNet, self).__init__(model_func, n_way, n_support, tf_path=tf_path)
-
+  def __init__(self, model_func,  n_way, n_support):
+    super(GnnNet, self).__init__(model_func, n_way, n_support)
+    
     # loss function
     self.loss_fn = nn.CrossEntropyLoss()
 
     # metric function
+    print(self.feat_dim)
     self.fc = nn.Sequential(nn.Linear(self.feat_dim, 128), nn.BatchNorm1d(128, track_running_stats=False)) if not self.maml else nn.Sequential(backbone.Linear_fw(self.feat_dim, 128), backbone.BatchNorm1d_fw(128, track_running_stats=False))
     self.gnn = GNN_nl(128 + self.n_way, 96, self.n_way)
     self.method = 'GnnNet'
@@ -65,4 +66,4 @@ class GnnNet(MetaTemplate):
     y_query = y_query.cuda()
     scores = self.set_forward(x)
     loss = self.loss_fn(scores, y_query)
-    return scores, loss
+    return loss

@@ -16,6 +16,7 @@ import backbone
 from methods.baselinetrain import BaselineTrain
 from methods.protonet import ProtoNet
 from methods.relationnet import RelationNet
+from methods.gnnnet import GnnNet
 
 from io_utils import model_dict, parse_args, get_resume_file  
 from datasets import miniImageNet_few_shot, cifar100_few_shot
@@ -74,7 +75,7 @@ if __name__=='__main__':
 
         model           = BaselineTrain( model_dict[params.model], params.num_classes)
 
-    elif params.method in ['protonet', 'relationnet']:
+    elif params.method in ['protonet', 'relationnet', 'gnnnet']:
         n_query = max(1, int(16* params.test_n_way/params.train_n_way)) #if test_n_way is smaller than train_n_way, reduce n_query to keep batch size small
         train_few_shot_params    = dict(n_way = params.train_n_way, n_support = params.n_shot) 
         test_few_shot_params     = dict(n_way = params.test_n_way, n_support = params.n_shot) 
@@ -102,6 +103,9 @@ if __name__=='__main__':
             model           = ProtoNet( model_dict[params.model], **train_few_shot_params )
         elif params.method == 'relationnet':
             model           = RelationNet( model_dict[params.model], **train_few_shot_params )
+        elif params.method == 'gnnnet':
+            model           = GnnNet( model_dict[params.model], **train_few_shot_params )
+    
     else:
        raise ValueError('Unknown method')
 
