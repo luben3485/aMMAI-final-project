@@ -6,7 +6,7 @@ import torch.optim
 import torch.optim.lr_scheduler as lr_scheduler
 import time
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 import glob
 
 
@@ -138,9 +138,11 @@ if __name__=='__main__':
         elif params.method == 'protonet_fc':
             model           = ProtoNetFC( model_dict[params.model], backbone.FC(512,256), **train_few_shot_params )
         elif params.method == 'e_protonet_fc':
-            ResNets = [ model_dict[params.model], model_dict[params.model], model_dict[params.model]]
-            FCs = [backbone.FC(512,256), backbone.FC(512,256), backbone.FC(512,256)]
-            model           = eProtoNetFC( ResNets, FCs, **train_few_shot_params )
+            #ResNets = [ model_dict[params.model], model_dict[params.model], model_dict[params.model]]
+            #FCs = [backbone.FC(512,256), backbone.FC(512,256), backbone.FC(512,256)]
+            #model           = eProtoNetFC( ResNets, FCs, backbone.FC(512,256), **train_few_shot_params )
+            model           = eProtoNetFC(model_dict[params.model](), model_dict[params.model](), model_dict[params.model](),backbone.FC(512,256),backbone.FC(512,256),backbone.FC(512,256), **train_few_shot_params )
+        
         elif params.method == 'relationnet':
             model           = RelationNet( model_dict[params.model], **train_few_shot_params )
         elif params.method == 'gnnnet':
@@ -170,11 +172,13 @@ if __name__=='__main__':
         model = train(base_loaders[0], val_loaders[0], model, optimization, start_epoch, stop_epoch, params)
     else:
         if params.method == 'e_protonet_fc':
+
             stop_epoch = stop_epoch // 2
             for i in range(2):
                 print('now source domain ', i, ":")
                 model = episodic_training(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch, params, train_phase='agg', agg_i = i)
             model = episodic_training(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch, params, train_phase='epi')
+
         else:
             stop_epoch = stop_epoch // 2
             for i in range(2):
