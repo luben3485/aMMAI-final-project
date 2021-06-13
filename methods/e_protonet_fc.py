@@ -97,6 +97,34 @@ class eProtoNetFC(MetaTemplate):
 
         return z_support, z_query
     
+    def correct(self, x):       
+        scores  = self.set_forward(x,0,0)
+        y_query = np.repeat(range( self.n_way ), self.n_query )
+
+        topk_scores, topk_labels = scores.data.topk(1, 1, True, True)
+        topk_ind = topk_labels.cpu().numpy()
+        top1_correct = np.sum(topk_ind[:,0] == y_query)
+        return float(top1_correct), len(y_query)
+    
+    def test_loop_epi(self, test_loader, record = None):
+        correct =0
+        count = 0
+        acc_all = []
+        
+        iter_num = len(test_loader) 
+        for i, (x,_) in enumerate(test_loader):
+            self.n_query = x.size(1) - self.n_support
+            if self.change_way:
+                self.n_way  = x.size(0)
+            correct_this, count_this = self.correct(x)
+            acc_all.append(correct_this/ count_this*100  )
+
+        acc_all  = np.asarray(acc_all)
+        acc_mean = np.mean(acc_all)
+        acc_std  = np.std(acc_all)
+        print('%d Test Acc = %4.2f%% +- %4.2f%%' %(iter_num,  acc_mean, 1.96* acc_std/np.sqrt(iter_num)))
+
+        return acc_mean
 
     def train_loop_epi(self, epoch, train_loader, optimizer , train_phase, agg_i=None):
         """
