@@ -38,7 +38,7 @@ class eProtoNetFC(MetaTemplate):
 
         return scores
 
-    def set_forward_loss(self, x1, x2):
+    def set_forward_loss(self, x1, x2=None):
         if x2 == None:
             y_query = torch.from_numpy(np.repeat(range( self.n_way ), self.n_query ))
             y_query = Variable(y_query.cuda())
