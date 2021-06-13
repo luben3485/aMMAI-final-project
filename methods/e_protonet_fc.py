@@ -12,10 +12,8 @@ import utils
 
 class eProtoNetFC(MetaTemplate):
     def __init__(self, Backbones, FCs, n_way, n_support):
-        super(eProtoNetFC, self).__init__(n_way, n_support)
+        super(eProtoNetFC, self).__init__(Backbones, FCs, n_way, n_support)
         self.loss_fn  = nn.CrossEntropyLoss()
-        self.Backbones = Backbones
-        self.FCs = FCs
 
     def set_forward(self, x, resnet_idx, fc_idx):
         ### jiafong
@@ -55,7 +53,7 @@ class eProtoNetFC(MetaTemplate):
             loss_3 = self.loss_fn(scores_epif1, y_query)
             loss_4 = self.loss_fn(scores_epif2, y_query)
             
-            loss = loss_1 + loss_2 + loss_3 + loss_4
+            loss = (loss_1 + loss_2 + loss_3 + loss_4)/4
 
         return loss
     

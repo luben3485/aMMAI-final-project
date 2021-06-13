@@ -8,11 +8,13 @@ import utils
 from abc import abstractmethod
 
 class MetaTemplate(nn.Module):
-    def __init__(self, n_way, n_support, change_way = True, device='cuda:0'):
+    def __init__(self, Backbones, FCs, n_way, n_support, change_way = True, device='cuda:0'):
         super(MetaTemplate, self).__init__()
         self.n_way      = n_way
         self.n_support  = n_support
         self.n_query    = -1 #(change depends on input) 
+        self.Backbones = Backbones
+        self.FCs = FCs
         self.change_way = change_way  #some methods allow different_way classification during training and test
         self.device     = device
 
