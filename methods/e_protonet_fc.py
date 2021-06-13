@@ -6,13 +6,13 @@ import torch.nn as nn
 from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
-from methods.meta_template import MetaTemplate
+from methods.e_meta_template import MetaTemplate
 
 import utils
 
 class eProtoNetFC(MetaTemplate):
     def __init__(self, Backbones, FCs, n_way, n_support):
-        super(eProtoNetFC, self).__init__(model_func, n_way, n_support)
+        super(eProtoNetFC, self).__init__(n_way, n_support)
         self.loss_fn  = nn.CrossEntropyLoss()
         self.Backbones = Backbones
         self.FCs = FCs

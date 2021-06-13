@@ -50,7 +50,7 @@ def train(base_loader, val_loader, model, optimization, start_epoch, stop_epoch,
         
     return model
 
-def episode_traing(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch, params, train_phase, agg_i=None):    
+def episodic_training(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch, params, train_phase, agg_i=None):    
     if optimization == 'Adam':
         optimizer = torch.optim.Adam(model.parameters())
     else:
