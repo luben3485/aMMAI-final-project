@@ -10,11 +10,16 @@ from torch.nn.utils import weight_norm
 class FC(nn.Module):
   def __init__(self, indim, outdim):
     super(FC, self).__init__()
-    self.fc1 = nn.Linear(indim, outdim)
+    #self.fc1 = nn.Linear(indim, outdim)
+    #self.relu = nn.ReLU()
+    self.fc1 = nn.Linear(indim, 256)
+    self.fc2 = nn.Linear(256, outdim)
     self.relu = nn.ReLU()
   
   def forward(self, x):
     x = self.fc1(x)
+    x = self.relu(x)
+    x = self.fc2(x)
     x = self.relu(x)
     return x
 

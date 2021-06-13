@@ -6,7 +6,7 @@ import torch.optim
 import torch.optim.lr_scheduler as lr_scheduler
 import time
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '7'
+os.environ['CUDA_VISIBLE_DEVICES'] = '5'
 import glob
 
 
@@ -141,7 +141,7 @@ if __name__=='__main__':
             #ResNets = [ model_dict[params.model], model_dict[params.model], model_dict[params.model]]
             #FCs = [backbone.FC(512,256), backbone.FC(512,256), backbone.FC(512,256)]
             #model           = eProtoNetFC( ResNets, FCs, backbone.FC(512,256), **train_few_shot_params )
-            model           = eProtoNetFC(model_dict[params.model](), model_dict[params.model](), model_dict[params.model](),backbone.FC(512,256),backbone.FC(512,256),backbone.FC(512,256), **train_few_shot_params )
+            model           = eProtoNetFC(model_dict[params.model](), model_dict[params.model](), model_dict[params.model](),backbone.FC(512,128),backbone.FC(512,128),backbone.FC(512,128), **train_few_shot_params )
         
         elif params.method == 'relationnet':
             model           = RelationNet( model_dict[params.model], **train_few_shot_params )
