@@ -79,14 +79,19 @@ class eProtoNetFC(MetaTemplate):
     
 
     def train_loop_epi(self, epoch, train_loader, optimizer , train_phase, agg_i=None):
-
+        """
+        
+        agg_i should be the domain idx in aggregation training.
+        
+        """
         print_freq = 10
 
         avg_loss=0
         
         if train_phase == 'agg' or train_phase == None:
+            assert agg_i != None
         
-            for i, (x, _) in enumerate(train_loader[0]):
+            for i, (x, _) in enumerate(train_loader[agg_i]):
                 self.n_query = x.size(1) - self.n_support           
                 if self.change_way:
                     self.n_way  = x.size(0)
@@ -101,7 +106,7 @@ class eProtoNetFC(MetaTemplate):
 
         elif train_phase == 'epi':
             
-            for i, ((x1, _ ),( x2, _)) in enumerate(zip(base_loaders[0], base_loaders[1])):
+            for i, ((x1, _ ),( x2, _)) in enumerate(zip(train_loader[0], train_loader[1])):
                 
                 assert x1.size(1) == x2.size(1)
                 self.n_query = x1.size(1) - self.n_support
