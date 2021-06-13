@@ -40,9 +40,7 @@ def meta_test(novel_loader, n_query = 15, task='fsl', finetune=True, n_pseudo=10
         elif params.method == 'protonet_fc':
             pretrained_model = ProtoNetFC( model_dict[params.model], backbone.FC(512,256), **train_few_shot_params )
         elif params.method == 'e_protonet_fc':
-            ResNets = [model_dict[params.model], model_dict[params.model], model_dict[params.model]]
-            FCs = [backbone.FC(512,256), backbone.FC(512,256), backbone.FC(512,256)]
-            pretrained_model           = eProtoNetFC( ResNets, FCs, **train_few_shot_params )
+            pretrained_model = eProtoNetFC(model_dict[params.model](), model_dict[params.model](), model_dict[params.model](),backbone.FC(512,256),backbone.FC(512,256),backbone.FC(512,256), **train_few_shot_params )
         elif params.method == 'relationnet':
             pretrained_model = RelationNet(model_dict[params.model], n_way = n_way, n_support = n_support)
         elif params.method == 'gnnnet':
@@ -102,8 +100,10 @@ def meta_test(novel_loader, n_query = 15, task='fsl', finetune=True, n_pseudo=10
                 psedo_query_set = psedo_query_set.cuda().view(n_way, fine_tune_n_query,  *x_a_i.size()[1:])
 
                 x = torch.cat((z_support, psedo_query_set), dim=1)
- 
-                loss = pretrained_model.set_forward_loss(x)
+                if params.method == 'e_protonet_fc':
+                    loss = pretrained_model.set_forward_loss(x,0,0)
+                else:
+                    loss = pretrained_model.set_forward_loss(x)
                 loss.backward()
                 delta_opt.step()
 
@@ -114,7 +114,10 @@ def meta_test(novel_loader, n_query = 15, task='fsl', finetune=True, n_pseudo=10
         
         pretrained_model.n_query = n_query
         with torch.no_grad():
-            scores = pretrained_model.set_forward(x_var.cuda())
+            if params.method == 'e_protonet_fc':
+                scores = pretrained_model.set_forward(x_var.cuda(),0,0)
+            else:
+                scores = pretrained_model.set_forward(x_var.cuda())
         
         y_query = np.repeat(range( n_way ), n_query )
         topk_scores, topk_labels = scores.data.topk(1, 1, True, True)
