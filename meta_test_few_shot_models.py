@@ -101,10 +101,7 @@ def meta_test(novel_loader, n_query = 15, task='fsl', finetune=True, n_pseudo=10
                 psedo_query_set = psedo_query_set.cuda().view(n_way, fine_tune_n_query,  *x_a_i.size()[1:])
 
                 x = torch.cat((z_support, psedo_query_set), dim=1)
-                if params.method == 'e_protonet_fc':
-                    loss = pretrained_model.set_forward_loss(x,0,0)
-                else:
-                    loss = pretrained_model.set_forward_loss(x)
+                loss = pretrained_model.set_forward_loss(x)
                 loss.backward()
                 delta_opt.step()
 
