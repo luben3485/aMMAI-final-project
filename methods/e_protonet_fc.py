@@ -150,7 +150,7 @@ class eProtoNetFC(MetaTemplate):
                 avg_loss = avg_loss+loss.item()
 
                 if i % print_freq==0:
-                    print('Epoch {:d} | Training Phase: AGG | Batch {:d}/{:d} | Loss {:f}'.format(epoch, i, len(train_loader), avg_loss/float(i+1)))
+                    print('Epoch {:d} | Training Phase: AGG | Batch {:d}/{:d} | Loss {:f}'.format(epoch, i, len(train_loader[agg_i]), avg_loss/float(i+1)))
 
         elif train_phase == 'epi':
             
@@ -167,23 +167,7 @@ class eProtoNetFC(MetaTemplate):
                 optimizer.step()
                 avg_loss = avg_loss+loss.item()
                 if i % print_freq==0:
-                    print('Epoch {:d} | Training Phase: EPI | Batch {:d}/{:d} | Loss {:f}'.format(epoch, i, len(train_loader), avg_loss/float(i+1)))
-                
-#         ###
-
-#         for i, (x1, _ ,x2, _ ) in enumerate(train_loader[0], train_loader[1]):
-#             self.n_query = x.size(1) - self.n_support           
-#             if self.change_way:
-#                 self.n_way  = x.size(0)
-#             optimizer.zero_grad()
-#             loss = self.set_forward_loss( x )
-#             loss.backward()
-#             optimizer.step()
-#             avg_loss = avg_loss+loss.item()
-
-#             if i % print_freq==0:
-#                 #print(optimizer.state_dict()['param_groups'][0]['lr'])
-#                 print('Epoch {:d} | Batch {:d}/{:d} | Loss {:f}'.format(epoch, i, len(train_loader), avg_loss/float(i+1)))
+                    print('Epoch {:d} | Training Phase: EPI | Batch {:d}/{:d} | Loss {:f}'.format(epoch, i, len(train_loader[0]), avg_loss/float(i+1)))
 
 
 def euclidean_dist( x, y):
