@@ -11,11 +11,11 @@ from methods.meta_template import MetaTemplate
 import utils
 
 class eProtoNetFC(MetaTemplate):
-    def __init__(self, model_func, fc, n_way, n_support):
-        super(eProtoNetFC, self).__init__( model_func,  n_way, n_support)
+    def __init__(self, Backbones, FCs, n_way, n_support):
+        super(eProtoNetFC, self).__init__(model_func, n_way, n_support)
         self.loss_fn  = nn.CrossEntropyLoss()
-        self.model_func = model_func
-        self.fc = fc
+        self.Backbones = Backbones
+        self.FCs = FCs
 
     def set_forward(self, x, resnet_idx, fc_idx):
         ### jiafong
@@ -62,11 +62,11 @@ class eProtoNetFC(MetaTemplate):
     def feature_extractor(self, x, resnet_idx):
         x = Variable(x.to(self.device))
         x = x.contiguous().view( self.n_way * (self.n_support + self.n_query), *x.size()[2:]) 
-        z_all = self.feature[resnet_idx].forward(x) ## Resnet to list, feature : 0,1,2
+        z_all = self.Backbones[resnet_idx].forward(x) ## Resnet to list, feature : 0,1,2
         return z_all
 
     def fc_layer(self, z_all, fc_idx):
-        z_all       = self.fc[fc_idx].forward(z_all.to(self.device))
+        z_all       = self.FCs[fc_idx].forward(z_all.to(self.device))
         z_all       = z_all.view( self.n_way, self.n_support + self.n_query, -1)
         return z_all
 

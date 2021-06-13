@@ -37,6 +37,12 @@ def meta_test(novel_loader, n_query = 15, task='fsl', finetune=True, n_pseudo=10
         # load pretrained model on miniImageNet
         if params.method == 'protonet':
             pretrained_model = ProtoNet(model_dict[params.model], n_way = n_way, n_support = n_support)
+        elif params.method == 'protonet_fc':
+            pretrained_model = ProtoNetFC( model_dict[params.model], backbone.FC(512,256), **train_few_shot_params )
+        elif params.method == 'e_protonet_fc':
+            ResNets = [model_dict[params.model], model_dict[params.model], model_dict[params.model]]
+            FCs = [backbone.FC(512,256), backbone.FC(512,256), backbone.FC(512,256)]
+            pretrained_model           = eProtoNetFC( ResNets, FCs, **train_few_shot_params )
         elif params.method == 'relationnet':
             pretrained_model = RelationNet(model_dict[params.model], n_way = n_way, n_support = n_support)
         elif params.method == 'gnnnet':
