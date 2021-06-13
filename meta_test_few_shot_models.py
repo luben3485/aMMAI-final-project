@@ -15,6 +15,7 @@ import configs
 import backbone
 from data.datamgr import SimpleDataManager, SetDataManager
 from methods.protonet import ProtoNet
+from methods.e_protonet_fc import eProtoNetFC
 from methods.relationnet import RelationNet
 from methods.gnnnet import GnnNet
 
