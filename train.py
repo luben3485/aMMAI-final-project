@@ -6,7 +6,7 @@ import torch.optim
 import torch.optim.lr_scheduler as lr_scheduler
 import time
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '7'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import glob
 
 
@@ -16,6 +16,7 @@ import backbone
 from methods.baselinetrain import BaselineTrain
 from methods.protonet import ProtoNet
 from methods.protonet_fc import ProtoNetFC
+from methods.e_protonet_fc import eProtoNetFC
 from methods.relationnet import RelationNet
 from methods.gnnnet import GnnNet
 
@@ -76,7 +77,7 @@ if __name__=='__main__':
 
         model           = BaselineTrain( model_dict[params.model], params.num_classes)
 
-    elif params.method in ['protonet', 'protonet_fc', 'relationnet', 'gnnnet']:
+    elif params.method in ['protonet', 'protonet_fc', 'e_protonet_fc', 'relationnet', 'gnnnet']:
         n_query = max(1, int(16* params.test_n_way/params.train_n_way)) #if test_n_way is smaller than train_n_way, reduce n_query to keep batch size small
         train_few_shot_params    = dict(n_way = params.train_n_way, n_support = params.n_shot) 
         test_few_shot_params     = dict(n_way = params.test_n_way, n_support = params.n_shot) 
@@ -104,6 +105,8 @@ if __name__=='__main__':
             model           = ProtoNet( model_dict[params.model], **train_few_shot_params )
         elif params.method == 'protonet_fc':
             model           = ProtoNetFC( model_dict[params.model], backbone.FC(512,256), **train_few_shot_params )
+        elif params.method == 'e_protonet_fc':
+            model           = eProtoNetFC( model_dict[params.model], backbone.FC(512,256), **train_few_shot_params )
         elif params.method == 'relationnet':
             model           = RelationNet( model_dict[params.model], **train_few_shot_params )
         elif params.method == 'gnnnet':

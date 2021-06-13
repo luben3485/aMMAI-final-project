@@ -10,9 +10,9 @@ from methods.meta_template import MetaTemplate
 
 import utils
 
-class ProtoNetFC(MetaTemplate):
+class eProtoNetFC(MetaTemplate):
     def __init__(self, model_func, fc, n_way, n_support):
-        super(ProtoNetFC, self).__init__( model_func,  n_way, n_support)
+        super(eProtoNetFC, self).__init__( model_func,  n_way, n_support)
         self.loss_fn  = nn.CrossEntropyLoss()
         self.fc = fc
 
