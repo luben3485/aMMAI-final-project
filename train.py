@@ -173,11 +173,12 @@ if __name__=='__main__':
     else:
         if params.method == 'e_protonet_fc':
 
-            model = episodic_training(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch, params, train_phase='epi')
+
             for i in range(2):
                 print('now source domain ', i, ":")
                 model = episodic_training(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch // 2, params, train_phase='agg', agg_i = i)
 
+            model = episodic_training(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch, params, train_phase='epi')
 
         else:
             stop_epoch = stop_epoch // 2
