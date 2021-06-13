@@ -6,6 +6,18 @@ import math
 import torch.nn.functional as F
 from torch.nn.utils import weight_norm
 
+# protonet_fc
+class FC(nn.Module):
+  def __init__(self, indim, outdim):
+    super(FC, self).__init__()
+    self.fc1 = nn.Linear(indim, outdim)
+    self.relu = nn.ReLU()
+  
+  def forward(self, x):
+    x = self.fc1(x)
+    x = self.relu(x)
+    return x
+
 # --- gaussian initialize ---
 def init_layer(L):
   # Initialization using fan-in

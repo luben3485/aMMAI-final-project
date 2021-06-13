@@ -10,10 +10,11 @@ from methods.meta_template import MetaTemplate
 
 import utils
 
-class ProtoNet(MetaTemplate):
-    def __init__(self, model_func, n_way, n_support):
-        super(ProtoNet, self).__init__( model_func,  n_way, n_support)
+class ProtoNetFC(MetaTemplate):
+    def __init__(self, model_func, fc, n_way, n_support):
+        super(ProtoNetFC, self).__init__( model_func,  n_way, n_support)
         self.loss_fn  = nn.CrossEntropyLoss()
+        self.fc = fc
 
     def set_forward(self,x,is_feature = False):
         z_support, z_query  = self.parse_feature(x,is_feature)
@@ -29,7 +30,6 @@ class ProtoNet(MetaTemplate):
     def set_forward_loss(self, x):
         y_query = torch.from_numpy(np.repeat(range( self.n_way ), self.n_query ))
         y_query = Variable(y_query.cuda())
-        print('y_query',y_query.shape)
         scores = self.set_forward(x)
         loss = self.loss_fn(scores, y_query)
 
@@ -42,6 +42,7 @@ class ProtoNet(MetaTemplate):
         else:
             x           = x.contiguous().view( self.n_way * (self.n_support + self.n_query), *x.size()[2:]) 
             z_all       = self.feature.forward(x)
+            z_all       = self.fc.forward(z_all)
             z_all       = z_all.view( self.n_way, self.n_support + self.n_query, -1)
         z_support   = z_all[:, :self.n_support]
         z_query     = z_all[:, self.n_support:]
