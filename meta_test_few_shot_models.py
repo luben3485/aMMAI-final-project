@@ -16,6 +16,7 @@ import backbone
 from data.datamgr import SimpleDataManager, SetDataManager
 from methods.protonet import ProtoNet
 from methods.e_protonet_fc import eProtoNetFC
+from methods.e_relationnet_fc import eRelationNetFC
 from methods.relationnet import RelationNet
 from methods.gnnnet import GnnNet
 
@@ -42,6 +43,8 @@ def meta_test(novel_loader, n_query = 15, task='fsl', finetune=True, n_pseudo=10
             pretrained_model = ProtoNetFC( model_dict[params.model], backbone.FC(512,256),n_way = n_way, n_support = n_support)
         elif params.method == 'e_protonet_fc':
             pretrained_model = eProtoNetFC(model_dict[params.model](), model_dict[params.model](), model_dict[params.model](),backbone.FC(512,256),backbone.FC(512,256),backbone.FC(512,256),n_way = n_way, n_support = n_support)
+        elif params.method == 'e_relationnet_fc':
+            pretrained_model = eRelationNetFC(model_dict[params.model](), model_dict[params.model](), model_dict[params.model](),backbone.FC(512,256),backbone.FC(512,256),backbone.FC(512,256),n_way = n_way, n_support = n_support)
         elif params.method == 'relationnet':
             pretrained_model = RelationNet(model_dict[params.model], n_way = n_way, n_support = n_support)
         elif params.method == 'gnnnet':
@@ -112,7 +115,7 @@ def meta_test(novel_loader, n_query = 15, task='fsl', finetune=True, n_pseudo=10
         
         pretrained_model.n_query = n_query
         with torch.no_grad():
-            if params.method == 'e_protonet_fc':
+            if params.method == 'e_protonet_fc' or params.method == 'e_relationnet_fc':
                 scores = pretrained_model.set_forward(x_var.cuda(),0,0)
             else:
                 scores = pretrained_model.set_forward(x_var.cuda())

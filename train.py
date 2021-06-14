@@ -17,6 +17,7 @@ from methods.baselinetrain import BaselineTrain
 from methods.protonet import ProtoNet
 from methods.protonet_fc import ProtoNetFC
 from methods.e_protonet_fc import eProtoNetFC
+from methods.e_relation_fc import eRelationFC
 from methods.relationnet import RelationNet
 from methods.gnnnet import GnnNet
 
@@ -109,7 +110,7 @@ if __name__=='__main__':
 
         model           = BaselineTrain( model_dict[params.model], params.num_classes)
 
-    elif params.method in ['protonet', 'protonet_fc', 'e_protonet_fc', 'relationnet', 'gnnnet']:
+    elif params.method in ['protonet', 'protonet_fc', 'e_protonet_fc', 'relationnet', 'e_relationnet_fc', 'gnnnet']:
         n_query = max(1, int(16* params.test_n_way/params.train_n_way)) #if test_n_way is smaller than train_n_way, reduce n_query to keep batch size small
         train_few_shot_params    = dict(n_way = params.train_n_way, n_support = params.n_shot) 
         test_few_shot_params     = dict(n_way = params.test_n_way, n_support = params.n_shot) 
@@ -145,6 +146,9 @@ if __name__=='__main__':
         
         elif params.method == 'relationnet':
             model           = RelationNet( model_dict[params.model], **train_few_shot_params )
+        elif params.method == 'e_relationnet_fc':
+            model           = eRelationNetFC(model_dict[params.model](), model_dict[params.model](), model_dict[params.model](),backbone.FC(512,256),backbone.FC(512,256),backbone.FC(512,256), **train_few_shot_params )
+
         elif params.method == 'gnnnet':
             model           = GnnNet( model_dict[params.model], **train_few_shot_params )
     
@@ -172,6 +176,14 @@ if __name__=='__main__':
         model = train(base_loaders[0], val_loaders[0], model, optimization, start_epoch, stop_epoch, params)
     else:
         if params.method == 'e_protonet_fc':
+
+
+            for i in range(2):
+                print('now source domain ', i, ":")
+                model = episodic_training(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch // 2, params, train_phase='agg', agg_i = i)
+
+            model = episodic_training(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch, params, train_phase='epi')
+        elif params.method == 'e_relationnet_fc':
 
 
             for i in range(2):
