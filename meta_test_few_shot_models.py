@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import torch.optim.lr_scheduler as lr_scheduler
 import time
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '4'
 import glob
 from itertools import combinations
 
