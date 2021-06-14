@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import torch.optim.lr_scheduler as lr_scheduler
 import time
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '7'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 import glob
 from itertools import combinations
 
@@ -15,6 +15,7 @@ import configs
 import backbone
 from data.datamgr import SimpleDataManager, SetDataManager
 from methods.protonet import ProtoNet
+from methods.protonet_fc import ProtoNetFC
 from methods.e_protonet_fc import eProtoNetFC
 from methods.e_relationnet_fc import eRelationNetFC
 from methods.relationnet import RelationNet
@@ -40,7 +41,7 @@ def meta_test(novel_loader, n_query = 15, task='fsl', finetune=True, n_pseudo=10
         if params.method == 'protonet':
             pretrained_model = ProtoNet(model_dict[params.model], n_way = n_way, n_support = n_support)
         elif params.method == 'protonet_fc':
-            pretrained_model = ProtoNetFC( model_dict[params.model], backbone.FC(512,256),n_way = n_way, n_support = n_support)
+            pretrained_model = ProtoNetFC( model_dict[params.model], backbone.FC(512,128),n_way = n_way, n_support = n_support)
         elif params.method == 'e_protonet_fc':
             pretrained_model = eProtoNetFC(model_dict[params.model](), model_dict[params.model](), model_dict[params.model](),backbone.FC(512,256),backbone.FC(512,256),backbone.FC(512,256),n_way = n_way, n_support = n_support)
         elif params.method == 'e_relationnet_fc':
