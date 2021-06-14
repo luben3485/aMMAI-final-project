@@ -6,7 +6,7 @@ import torch.optim
 import torch.optim.lr_scheduler as lr_scheduler
 import time
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '7'
+os.environ['CUDA_VISIBLE_DEVICES'] = '3'
 import glob
 
 
@@ -111,7 +111,7 @@ if __name__=='__main__':
         model           = BaselineTrain( model_dict[params.model], params.num_classes)
 
     elif params.method in ['protonet', 'protonet_fc', 'e_protonet_fc', 'relationnet', 'e_relationnet_fc', 'gnnnet']:
-        n_query = max(1, int(16* params.test_n_way/params.train_n_way)) #if test_n_way is smaller than train_n_way, reduce n_query to keep batch size small
+        n_query = max(1, int(8* params.test_n_way/params.train_n_way)) #if test_n_way is smaller than train_n_way, reduce n_query to keep batch size small
         train_few_shot_params    = dict(n_way = params.train_n_way, n_support = params.n_shot) 
         test_few_shot_params     = dict(n_way = params.test_n_way, n_support = params.n_shot) 
 
