@@ -39,7 +39,7 @@ def meta_test(novel_loader, n_query = 15, task='fsl', finetune=True, n_pseudo=10
         if params.method == 'protonet':
             pretrained_model = ProtoNet(model_dict[params.model], n_way = n_way, n_support = n_support)
         elif params.method == 'protonet_fc':
-            pretrained_model = ProtoNetFC( model_dict[params.model], backbone.FC(512,256),n_way = n_way, n_support = n_support)
+            pretrained_model = ProtoNetFC( model_dict[params.model], backbone.FC(512,128),n_way = n_way, n_support = n_support)
         elif params.method == 'e_protonet_fc':
             pretrained_model = eProtoNetFC(model_dict[params.model](), model_dict[params.model](), model_dict[params.model](),backbone.FC(512,128),backbone.FC(512,128),backbone.FC(512,128),n_way = n_way, n_support = n_support)
         elif params.method == 'relationnet':

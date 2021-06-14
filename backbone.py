@@ -287,7 +287,7 @@ class BatchNorm1d_fw(nn.BatchNorm1d):
 
 # --- Simple Conv Block ---
 class ConvBlock(nn.Module):
-  maml = False
+  maml = True
   def __init__(self, indim, outdim, pool = True, padding = 1):
     super(ConvBlock, self).__init__()
     self.indim  = indim
