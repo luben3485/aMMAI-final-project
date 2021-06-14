@@ -310,7 +310,7 @@ class ConvBlock(nn.Module):
 
 # --- Simple ResNet Block ---
 class SimpleBlock(nn.Module):
-  maml = False
+  maml = True
   def __init__(self, indim, outdim, half_res, leaky=False):
     super(SimpleBlock, self).__init__()
     self.indim = indim
@@ -509,7 +509,7 @@ class ResNet(nn.Module):
         out = self.trunk(x)
         return out
 
-def ResNet10( flatten = True):
+def ResNet10( flatten = False):
     return ResNet(SimpleBlock, [1,1,1,1],[64,128,256,512], flatten)
 
 def ResNet18( flatten = True):

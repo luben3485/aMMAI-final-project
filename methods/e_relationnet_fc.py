@@ -3,14 +3,15 @@
 import backbone
 import torch
 import torch.nn as nn
+from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
 from methods.e_meta_template import MetaTemplate
 import utils
 
 class eRelationNetFC(MetaTemplate):
-  def __init__(self, bo,b1,b2,fc0,fc1,fc2,  n_way, n_support, loss_type = 'mse'):
-    super(RelationNet, self).__init__(n_way, n_support)
+  def __init__(self, b0,b1,b2,fc0,fc1,fc2,  n_way, n_support, loss_type = 'mse'):
+    super(eRelationNetFC, self).__init__(n_way, n_support)
     
     self.b0 = b0
     self.b1 = b1
@@ -27,14 +28,16 @@ class eRelationNetFC(MetaTemplate):
       self.loss_fn = nn.CrossEntropyLoss()
 
     # metric function
-    self.relation_module = RelationModule( self.feat_dim , 8, self.loss_type ) #relation net features are not pooled, so self.feat_dim is [dim, w, h]
+    self.r0 = RelationModule( self.feat_dim , 8, self.loss_type ) #relation net features are not pooled, so self.feat_dim is [dim, w, h]
+    self.r1 = RelationModule( self.feat_dim , 8, self.loss_type ) #relation net features are not pooled, so self.feat_dim is [dim, w, h]
+    self.r2 = RelationModule( self.feat_dim , 8, self.loss_type ) #relation net features are not pooled, so self.feat_dim is [dim, w, h]
     self.method = 'RelationNet'
 
   def set_forward(self, x, resnet_idx, fc_idx):
     
     # get features
     z_all = self.feature_extractor(x, resnet_idx)
-    z_all = self.fc_layer(z_all, fc_idx)
+    #z_all = self.fc_layer(z_all, fc_idx)
     z_support, z_query = self.parse_feature(z_all)
     z_support   = z_support.contiguous()
     z_proto     = z_support.view( self.n_way, self.n_support, *self.feat_dim ).mean(1)
@@ -47,7 +50,13 @@ class eRelationNetFC(MetaTemplate):
     extend_final_feat_dim = self.feat_dim.copy()
     extend_final_feat_dim[0] *= 2
     relation_pairs = torch.cat((z_proto_ext,z_query_ext),2).view(-1, *extend_final_feat_dim)
-    relations = self.relation_module(relation_pairs).view(-1, self.n_way)
+    if fc_idx == 0:
+      relations = self.r0(relation_pairs).view(-1, self.n_way)
+    elif fc_idx == 1:
+      relations = self.r1(relation_pairs).view(-1, self.n_way)
+    elif fc_idx == 2:
+      relations = self.r2(relation_pairs).view(-1, self.n_way)
+
     scores = relations 
     return scores
 
@@ -78,7 +87,7 @@ class eRelationNetFC(MetaTemplate):
   def set_forward_loss(self, x1, x2=None):
     y = torch.from_numpy(np.repeat(range( self.n_way ), self.n_query ))
     if x2 == None:
-      scores = self.set_forward(x,0,0)
+      scores = self.set_forward(x1,0,0)
       if self.loss_type == 'mse':
         y_oh = utils.one_hot(y, self.n_way)
         y_oh = y_oh.cuda()
@@ -97,7 +106,6 @@ class eRelationNetFC(MetaTemplate):
       if self.loss_type == 'mse':
         y_oh = utils.one_hot(y, self.n_way)
         y_oh = y_oh.cuda()
-        loss = self.loss_fn(scores, y_oh)
         loss_1 = self.loss_fn(scores_epic1, y_oh)
         loss_2 = self.loss_fn(scores_epic2, y_oh)
         loss_3 = self.loss_fn(scores_epif1, y_oh)
@@ -178,11 +186,6 @@ class eRelationNetFC(MetaTemplate):
     return acc_mean
 
   def train_loop_epi(self, epoch, train_loader, optimizer , train_phase, agg_i=None):
-        """
-        
-        agg_i should be the domain idx in aggregation training.
-        
-        """
     print_freq = 10
 
     avg_loss=0

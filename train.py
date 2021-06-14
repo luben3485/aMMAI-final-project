@@ -6,7 +6,7 @@ import torch.optim
 import torch.optim.lr_scheduler as lr_scheduler
 import time
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '3'
+os.environ['CUDA_VISIBLE_DEVICES'] = '5'
 import glob
 
 
@@ -17,7 +17,7 @@ from methods.baselinetrain import BaselineTrain
 from methods.protonet import ProtoNet
 from methods.protonet_fc import ProtoNetFC
 from methods.e_protonet_fc import eProtoNetFC
-from methods.e_relation_fc import eRelationFC
+from methods.e_relationnet_fc import eRelationNetFC
 from methods.relationnet import RelationNet
 from methods.gnnnet import GnnNet
 
@@ -186,11 +186,12 @@ if __name__=='__main__':
         elif params.method == 'e_relationnet_fc':
 
 
+            model = episodic_training(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch, params, train_phase='epi')
             for i in range(2):
                 print('now source domain ', i, ":")
                 model = episodic_training(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch // 2, params, train_phase='agg', agg_i = i)
 
-            model = episodic_training(base_loaders, val_loaders, model, optimization, start_epoch, stop_epoch, params, train_phase='epi')
+
 
         else:
             stop_epoch = stop_epoch // 2
