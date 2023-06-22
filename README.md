@@ -1,5 +1,8 @@
 # NTU-AMMAI-CDFSL
 
+## Experimental Results
+   https://docs.google.com/document/d/1Y_RRiJRqP8v4OpCuIm4wL7_09j4jQrWpluvWuVGEbtI/edit?usp=sharing
+
 The source code of NTU-AMMAI-CDFSL 2021 version.
 
 ## First Steps
