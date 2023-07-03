@@ -30,7 +30,7 @@
    1. Download all the needed datasets and trained model via above link and place them to correct locations.
    2. Change configuration in config.py to the correct paths in your own computer if needed.
 
-# Training and Testing Commands
+## Training and Testing Commands
    - **Command for training the model**
       ```bash
            python train.py --task fsl/cdfsl-single --model MODEL  --method METHOD --n_shot 5 --train_aug
