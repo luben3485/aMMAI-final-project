@@ -36,7 +36,7 @@
            python train.py --task fsl/cdfsl-single --model MODEL  --method METHOD --n_shot 5 --train_aug
            python train.py --task cdfsl-multi --model MODEL  --method METHOD --n_shot 5 --train_aug
        ```
-       - METHOD: protonet(baseline), e_protonet_fc, e_relationnet_fc.
+       - METHOD: protonet(baseline), e_protonet_fc, and e_relationnet_fc.
        - TASK: [fsl/cdfsl-single/cdfsl-multi], please note that selecting fsl and cdfsl-single is exactly same in trainig (only trained on mini-ImageNet, so just choose one of them, not both).
        - n_shot: how many samples per class in training tasks, **you can modify this but the maximum should be less than 10.**
        - MODEL: ResNet10 for now, there are many other models in backbone.py, you can change them by yourself.
@@ -46,8 +46,9 @@
         ```bash
             python meta_test_few_shot_models.py --task TASK --model MODEL --method METHOD  --train_aug --finetune
         ```
+       - METHOD: protonet(baseline), e_protonet_fc, and e_relationnet_fc.
        - TASK: [fsl/cdfsl-single/cdfsl-multi], three types of tasks, you need to select each of them.
        - MODEL: ResNet10 for now, there are many other models in backbone.py, you can change them by yourself.
-       - METHOD: protonet(baseline) and e_protonet_fc, e_relationnet_fc.
+       
        - train_aug: you need to add this if you use it in the training (for finding the correct path).
        - finetune: (optional) use the PQS to finetune the model if selected.
